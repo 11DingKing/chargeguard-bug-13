@@ -9,8 +9,10 @@ import (
 func TaskHTTPHandler(w http.ResponseWriter, r *http.Request) {
 	history := charging.InspectionHistory()
 	if current := r.URL.Query().Get("current"); current != "" {
-		history[len(history)-1] = current
-		history = append(history, "current")
+		view := make([]string, 0, len(history)+1)
+		view = append(view, history...)
+		view = append(view, current)
+		history = view
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(history)
